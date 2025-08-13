@@ -10,18 +10,7 @@ import { Blog } from '../../shared/models/blogs';
   templateUrl: './blog-list.html',
   styleUrl: './blog-list.css',
 })
-export class BlogList implements OnInit {
+export class BlogList {
   blogService = inject(BlogService);
-  blogs: Blog[] = [];
-
-  ngOnInit() {
-    this.getBlogs();
-  }
-
-  getBlogs() {
-    this.blogService.getBlogList().subscribe((blogs) => {
-      this.blogs = blogs;
-      console.log('Blogs fetched:', this.blogs);
-    });
-  }
+  blogs$ = this.blogService.getBlogList();
 }
