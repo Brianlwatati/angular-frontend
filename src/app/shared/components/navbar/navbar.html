@@ -1,6 +1,6 @@
 <!-- generate a component navbar and style it with Tailwind CSS. -->
 <nav class="bg-[#D9D9D9] p-4">
-  <div class="container mx-auto flex justify-between items-center">
+  <div class="container text-sm mx-auto flex justify-between items-center">
     <div class="text-white text-lg font-bold">
       <a routerLink="">
         <img
@@ -11,11 +11,11 @@
       </a>
     </div>
     <div class="space-x-4 font-medium flex items-center">
-      <a routerLink="" class="text-gray-950 hover:text-white">Blogs</a>
+      <a routerLink="" class="text-gray-950 hover:text-gray-500">Blogs</a>
       <app-search-form></app-search-form>
       <a
         routerLink="/create-blog"
-        class="bg-[#8E8E8E] py-2.5 px-3 rounded-sm text-gray-200 hover:text-white"
+        class="bg-[#8E8E8E] py-2.5 px-3 rounded-sm text-gray-200 hover:text-gray-500"
         >Create a Blog</a
       >
     </div>

@@ -5,12 +5,13 @@ import { BlogService } from '../../shared/services/blog';
 import { BlogItem } from '../blog-list/blog-item/blog-item';
 import { Blog } from '../../shared/models/blogs';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
-import { debounceTime, distinctUntilChanged, startWith, switchMap } from 'rxjs/operators';
+import { debounceTime, distinctUntilChanged, map, startWith, switchMap } from 'rxjs/operators';
 import { Observable, combineLatest, of } from 'rxjs';
+import { SearchForm } from "../../shared/components/search-form/search-form";
 
 @Component({
   selector: 'app-search-blog',
-  imports: [CommonModule, BlogItem, ReactiveFormsModule],
+  imports: [CommonModule, BlogItem, ReactiveFormsModule, SearchForm],
   templateUrl: './search-blog.html',
   styleUrl: './search-blog.css'
 })
@@ -18,36 +19,31 @@ export class SearchBlog {
   private route = inject(ActivatedRoute);
   private blogService = inject(BlogService);
   private router = inject(Router);
+  queryParam:string = '';
 
-  searchControl = new FormControl('');
   blogs$: Observable<Blog[]>;
 
   constructor() {
-    // Listen to query param changes and input changes
-    const query$ = this.route.queryParamMap.pipe(
-      switchMap(params => {
-        const q = params.get('q') || '';
-        this.searchControl.setValue(q, { emitEvent: false });
-        return of(q);
-      })
-    );
-
+    // Listen to query param changes and fetch blogs based on the search query
     this.blogs$ = combineLatest([
-      this.searchControl.valueChanges.pipe(startWith(''), debounceTime(300), distinctUntilChanged()),
-      query$
+      this.route.queryParamMap.pipe(
+        startWith({ get: () => '' }), // Start with an empty query param
+        switchMap(params => {
+          this.queryParam = params.get('q') || '';
+          return this.blogService.getBlogListBySearch(this.queryParam);
+        })
+      )
     ]).pipe(
-      switchMap(([input, query]) => {
-        const search = input || query || '';
-        if (!search) return of([]);
-        return this.blogService.getBlogListBySearch(search);
-      })
+      distinctUntilChanged(), // Ensure we only emit when the value changes
+      // Extract the first (and only) element from the array
+      // so that blogs$ is Observable<Blog[]>
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-return
+      map(([blogs]) => blogs)
     );
+    
+   
+  
   }
 
-  onSearch() {
-    const value = this.searchControl.value?.trim();
-    if (value) {
-      this.router.navigate(['/search-blog'], { queryParams: { q: value } });
-    }
-  }
+ 
 }

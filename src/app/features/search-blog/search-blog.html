@@ -1,26 +1,25 @@
-
 <div class="py-10">
-	<div class="container mx-auto">
-		<form class="mb-6 flex" (ngSubmit)="onSearch()">
-			<input
-				[formControl]="searchControl"
-				type="text"
-				class="flex-grow px-4 py-2 border rounded-l focus:outline-none"
-				placeholder="Search blogs..."
-			/>
-			<button type="submit" class="px-4 py-2 bg-blue-600 text-white rounded-r">Search</button>
-		</form>
-		<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-x-16 gap-14">
-			<ng-container *ngIf="blogs$ | async as blogs">
-				<ng-container *ngIf="blogs.length > 0; else noBlogs">
-					<ng-container *ngFor="let blog of blogs">
-						<app-blog-item [blog]="blog"></app-blog-item>
-					</ng-container>
-				</ng-container>
-				<ng-template #noBlogs>
-					<p class="col-span-full text-center text-gray-500">No blogs found.</p>
-				</ng-template>
-			</ng-container>
-		</div>
-	</div>
+  <div class="container mx-auto">
+    <h1 class="text-2xl font-medium mb-4 text-center">Search Blogs</h1>
+
+    <div class="text-center mb-5">
+      <app-search-form></app-search-form>
+    </div>
+    <div class="text-sm text-gray-500 mb-6 text-center">
+      @if(queryParam) {
+      <span>
+        Showing results for "
+        <strong>{{ queryParam }}</strong
+        >"
+      </span>
+      }
+    </div>
+    @if (blogs$ | async; as blogs) {
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-x-16 gap-14">
+      @for (blog of blogs; track blog.id) {
+      <app-blog-item [blog]="blog"></app-blog-item>
+      }
+    </div>
+    }
+  </div>
 </div>

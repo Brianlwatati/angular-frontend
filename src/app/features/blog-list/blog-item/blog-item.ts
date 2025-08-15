@@ -11,5 +11,5 @@ import { RouterLink } from '@angular/router';
 })
 export class BlogItem {
   @Input()
-  blog!: Blog; // Replace 'any' with your Blog type if you have one
+  blog!: Blog; 
 }
